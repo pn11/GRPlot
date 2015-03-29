@@ -12,6 +12,10 @@
 #include<TGraph.h>
 
 
+#include <sys/types.h> //http://tech.ckme.co.jp/cpp/cpp_readdir.shtml
+#include <dirent.h> //http://www.loose-info.com/main/memolist/c/lib_dirent_readdir.html
+
+
 int main(int argc, char* argv[]){
   using namespace std;
   
@@ -19,11 +23,11 @@ int main(int argc, char* argv[]){
 
   string str;
   vector<string> line;
-
+  
   TGraph *g1;
   
   ofstream fout("grplot.log", ios::app);
-
+  
   
   while(1){
     
@@ -32,7 +36,7 @@ int main(int argc, char* argv[]){
     getline(cin, str);
     fout << str << endl;
     fout.close();
-
+    
     stringstream ss;    
     ss.str(str);
     line.clear();
@@ -42,32 +46,48 @@ int main(int argc, char* argv[]){
     }
     cout << line.size() << endl;        
     
-    if (line.size() > 0){
-      cout << line.at(0) << endl;
+    if (line.size() == 0){
+      cout << "Input command!" << endl;
+      continue;
+    }
+
+    //    cout << line.at(0) << endl;
+    
       
-      
-      if ( line.at(0) == "plot"){
-	if (line.size()>1 && line.at(1) != "[" ){
-	  TCanvas *c1 = new TCanvas("c1", "grplot");
-	  g1 = new TGraph(line.at(1).c_str());
-	  g1->SetMarkerColor(kRed);
-	  g1->SetMarkerSize(1);
-	  g1->SetMarkerStyle(2);
-	  g1->Draw("AP");
+    if ( line.at(0) == "plot"){
+      if (line.size()>1 && line.at(1) != "[" ){
+	TCanvas *c1 = new TCanvas("c1", "grplot");
+	g1 = new TGraph(line.at(1).c_str());
+	g1->SetMarkerColor(kRed);
+	g1->SetMarkerSize(1);
+	g1->SetMarkerStyle(2);
+	g1->Draw("AP");
 	  c1->Update();
-
-	}
+	  
       }
-      
-      else if (line.at(0) == ".q" || line.at(0) == "q" || line.at(0) == "exit"){
-	gROOT->ProcessLine(".q");
+    }
+    
+    else if ( line.at(0) == "ls"){
+      DIR *dp = opendir(".");
+      struct dirent *dent;
+      while ( dp != NULL ){
+	dent = readdir(dp);
+	  if ( dent != NULL ){
+	    string fname = dent->d_name;
+	    cout << fname << endl;
+	  }
+	  else {
+	    break;
+	  } 
       }
-
-      else{
-	cout << "^" << endl
-	     << "invalid command" << endl;
-	continue;
-      }
+      closedir(dp);	
+    }      
+    else if (line.at(0) == ".q" || line.at(0) == "q" || line.at(0) == "exit"){
+      gROOT->ProcessLine(".q");
+    }
+    else{
+      cout << "^" << endl
+	   << "invalid command" << endl;
     } 
   }	
   
