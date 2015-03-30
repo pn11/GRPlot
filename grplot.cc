@@ -15,6 +15,10 @@
 #include <sys/types.h> //http://tech.ckme.co.jp/cpp/cpp_readdir.shtml
 #include <dirent.h> //http://www.loose-info.com/main/memolist/c/lib_dirent_readdir.html
 
+//GNU Readline
+#include <readline/readline.h>
+#include <readline/history.h>
+
 
 int main(int argc, char* argv[]){
   using namespace std;
@@ -23,20 +27,23 @@ int main(int argc, char* argv[]){
 
   string str;
   vector<string> line;
-  
+char *command;  
+
   TGraph *g1;
-  
-  ofstream fout("grplot.log", ios::app);
+
+
+   using_history();  
+//  ofstream fout("grplot.log", ios::app);
   
   
   while(1){
+	read_history(".grplot_history");
+	command = readline("grplot> ");    
+	add_history(command);
+    write_history(".grplot_history");
+    free(command);
     
-    cout << "grplot> ";    
-    
-    getline(cin, str);
-    fout << str << endl;
-    fout.close();
-    
+	str = command;
     stringstream ss;    
     ss.str(str);
     line.clear();
@@ -63,7 +70,7 @@ int main(int argc, char* argv[]){
 	g1->SetMarkerStyle(2);
 	g1->Draw("AP");
 	  c1->Update();
-	  
+//	  app->Run();
       }
     }
     
@@ -90,5 +97,5 @@ int main(int argc, char* argv[]){
 	   << "invalid command" << endl;
     } 
   }	
-  
+
 }

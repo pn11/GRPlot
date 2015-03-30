@@ -1,3 +1,7 @@
 *~
 grplot
 grplot.o
+
+.grplot_history
+
+*.log
