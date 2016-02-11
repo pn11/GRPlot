@@ -5,3 +5,4 @@ grplot.o
 .grplot_history
 
 *.log
+*.so
