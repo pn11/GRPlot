@@ -99,7 +99,7 @@ Bool_t TInterruptHandler::Notify()
     
     Break("TInterruptHandler::Notify", "keyboard interrupt");
     if (TROOT::Initialized()) {
-        Getlinem(kInit, "Root > ");
+        Getlinem(kInit, "ROOT > ");
         gCling->Reset();
 #ifndef WIN32
         if (gException)
@@ -138,10 +138,10 @@ ClassImp(TRint_gr)
 /// the CINT C++ interpreter via the command line.
 
 TRint_gr::TRint_gr(const char *appClassName, int *argc, char **argv,
-                   void *options, int numOptions, Bool_t noLogo):TRint(appClassName, argc, argv, options, numOptions, noLogo),fCaughtException(kFALSE)
+                   void *options, int numOptions, Bool_t noLogo):TRint(appClassName, argc, argv, options, numOptions, kTRUE),fCaughtException(kFALSE)
 {
     fNcmd          = 0;
-    fDefaultPrompt = "root [%d] ";
+    fDefaultPrompt = "GRPLOT [%d] ";
     fInterrupt     = kFALSE;
     
     gBenchmark = new TBenchmark();
@@ -209,7 +209,7 @@ TRint_gr::TRint_gr(const char *appClassName, int *argc, char **argv,
     
     // Goto into raw terminal input mode
     char defhist[kMAXPATHLEN];
-    snprintf(defhist, sizeof(defhist), "%s/.root_hist", gSystem->HomeDirectory());
+    snprintf(defhist, sizeof(defhist), "%s/.grplot_hist", gSystem->HomeDirectory());
     logon = gEnv->GetValue("Rint.History", defhist);
     // In the code we had HistorySize and HistorySave, in the rootrc and doc
     // we have HistSize and HistSave. Keep the doc as it is and check
@@ -470,29 +470,30 @@ void TRint_gr::PrintLogo(Bool_t lite)
         // replaced by spaces needed to make all lines as long as the longest line.
         std::vector<TString> lines;
         // Here, %%s results in %s after TString::Format():
-        lines.emplace_back(TString::Format("Welcome to ROOT %s%%shttp://root.cern.ch",
+        lines.emplace_back(TString::Format("Welcome to GRPLOT%%shttps://github.com/pn11/GRPlot"));
+        lines.emplace_back(TString::Format("based on ROOT%s%%shttp://root.cern.ch",
                                            gROOT->GetVersion()));
-        lines.emplace_back(TString::Format("%%s(c) 1995-2014, The ROOT Team"));
+        lines.emplace_back(TString::Format("%%s(c) 2015-2016, Oka"));
         lines.emplace_back(TString::Format("Built for %s%%s", gSystem->GetBuildArch()));
-        if (!strcmp(gROOT->GetGitBranch(), gROOT->GetGitCommit())) {
-            static const char *months[] = {"January","February","March","April","May",
-                "June","July","August","September","October",
-                "November","December"};
-            Int_t idatqq = gROOT->GetVersionDate();
-            Int_t iday   = idatqq%100;
-            Int_t imonth = (idatqq/100)%100;
-            Int_t iyear  = (idatqq/10000);
+//        if (!strcmp(gROOT->GetGitBranch(), gROOT->GetGitCommit())) {
+//            static const char *months[] = {"January","February","March","April","May",
+//                "June","July","August","September","October",
+//                "November","December"};
+//            Int_t idatqq = gROOT->GetVersionDate();
+//            Int_t iday   = idatqq%100;
+//            Int_t imonth = (idatqq/100)%100;
+//            Int_t iyear  = (idatqq/10000);
             
-            lines.emplace_back(TString::Format("From tag %s, %d %s %4d%%s",
-                                               gROOT->GetGitBranch(),
-                                               iday,months[imonth-1],iyear));
-        } else {
+//            lines.emplace_back(TString::Format("From tag %s, %d %s %4d%%s",
+//                                               gROOT->GetGitBranch(),
+//                                               iday,months[imonth-1],iyear));
+//        } else {
             // If branch and commit are identical - e.g. "v5-34-18" - then we have
             // a release build. Else specify the git hash this build was made from.
-            lines.emplace_back(TString::Format("From %s@%s, %s%%s",
-                                               gROOT->GetGitBranch(),
-                                               gROOT->GetGitCommit(), gROOT->GetGitDate()));
-        }
+//            lines.emplace_back(TString::Format("From %s@%s, %s%%s",
+//                                               gROOT->GetGitBranch(),
+//                                               gROOT->GetGitCommit(), gROOT->GetGitDate()));
+//        }
         lines.emplace_back(TString("Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'%s"));
         
         // Find the longest line and its length:
@@ -730,6 +731,8 @@ Long_t  TRint_gr::ProcessLineNr(const char* filestem, const char *line, Int_t *e
     if (!error)
         error = &err;
     if (line && line[0] != '.') {
+        const char *transline = TranslateLine(line);
+        if (transline) return ProcessLine(transline, kFALSE, error);
         TString lineWithNr = TString::Format("#line 1 \"%s%d\"\n", filestem, fNcmd - 1);
         int res = ProcessLine(lineWithNr + line, kFALSE, error);
         if (*error == TInterpreter::kProcessing)
@@ -755,4 +758,43 @@ Int_t TRint_gr::TabCompletionHook(char *buf, int *pLoc, std::ostream& out)
         return gTabCom->Hook(buf, pLoc, out);
     
     return -1;
+}
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<iostream>
+#include<fstream>
+#include<sstream>
+#include<string>
+#include<vector>
+
+const char *TRint_gr::TranslateLine(const char *line){
+    std::stringstream ss;
+    ss.str(line);
+    std::string str, transLine="";
+    std::vector<std::string> commands;
+    //    commands.clear();
+    
+    while (ss >> str){
+        commands.push_back(str);
+    }
+    //    cout << commands.size() << endl;
+    
+    if (commands[0] == "ls"){
+        transLine = ".!ls";
+    }
+    
+    else if (commands[0] == "exit" || commands[0] == "quit" || commands[0] == "q"){
+        transLine = ".q";
+    }
+    
+    else if (commands[0] == "help"){
+        printf("We cannot help you.\n");
+    }
+    
+    else if (commands[0] == "demo"){
+        transLine = "TCanvas *c = new TCanvas(); TGraph *g = new TGraph(\"test.dat\"); g->SetMarkerSize(1); g->SetMarkerStyle(2); g->Draw(\"ap\");";
+    }
+    return transLine.c_str();
 }

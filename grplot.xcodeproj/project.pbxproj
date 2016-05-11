@@ -12,12 +12,14 @@
 		4F11D8331CE2D24400DF87C5 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
 		4F11D8401CE2EFB800DF87C5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		4F11D8411CE2EFB800DF87C5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		4F11D8421CE33B8E00DF87C5 /* linkdef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = linkdef.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		4F8FDE1A1CE2D1C100709BA5 = {
 			isa = PBXGroup;
 			children = (
+				4F11D8421CE33B8E00DF87C5 /* linkdef.h */,
 				4F11D8401CE2EFB800DF87C5 /* Makefile */,
 				4F11D8411CE2EFB800DF87C5 /* README.md */,
 				4F11D82F1CE2D21300DF87C5 /* grplot.cc */,

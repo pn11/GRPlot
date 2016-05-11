@@ -3,7 +3,6 @@
 
 #include "TRint.h"
 
-
 class TRint_gr : public TRint
 {
     
@@ -21,6 +20,7 @@ private:
     void    ExecLogon();
     Long_t  ProcessRemote(const char *line, Int_t *error = 0);
     Long_t  ProcessLineNr(const char* filestem, const char *line, Int_t *error = 0);
+    const char  *TranslateLine(const char* line);
     
 public:
     TRint_gr(const char *appClassName, int *argc, char **argv,
