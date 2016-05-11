@@ -15,39 +15,39 @@ lineParser::~lineParser()
 
 int lineParser::readLine()
 {
-  char *command;
-  command = readline(Form("grplot [%d] > ", count));
-  if (!strcmp(command, "\0")) return -1;
-  count++;
-  add_history(command);
-  free(command);
-  line = command;
-  return 0;
+    char *command;
+    command = readline(Form("grplot [%d] > ", count));
+    if (!strcmp(command, "\0")) return -1;
+    count++;
+    add_history(command);
+    free(command);
+    line = command;
+    return 0;
 }
 
 int lineParser::parse(){
-//    cout << line << endl;
-    stringstream ss;    
+    //    cout << line << endl;
+    stringstream ss;
     ss.str(line);
     string str;
     vector<string> commands;
-//    commands.clear();
-
+    //    commands.clear();
+    
     while (ss >> str){
-      commands.push_back(str);
+        commands.push_back(str);
     }
-//    cout << commands.size() << endl;        
+    //    cout << commands.size() << endl;
     
     if (commands.size() == 0){
-      cout << "Input command!" << endl;
-      return 0;
+        cout << "Input command!" << endl;
+        return 0;
     }
-
+    
     else if (commands[0] == "ls"){
         ls();
         return 0;
     }
-   
+    
     else if (commands[0] == "exit" || commands[0] == "quit" || commands[0] == "q" || commands[0] == ".q" ){
         return -1;
     }
@@ -55,8 +55,8 @@ int lineParser::parse(){
     else if (commands[0] == "plot"){
         if (commands.size() < 2){
             cout << line << endl
-                 << "     ^^" << endl
-                 << "    Input data or function." << endl;
+            << "     ^^" << endl
+            << "    Input data or function." << endl;
         }
         else {
             plot(commands);
@@ -64,8 +64,8 @@ int lineParser::parse(){
     }
     else {
         cout << line << endl
-             << "^^" << endl
-             << "invalid command" << endl; 
+        << "^^" << endl
+        << "invalid command" << endl;
     }
     return 0;
 }
@@ -79,32 +79,32 @@ int lineParser::plot(vector<string> commands){
         int length = commands[1].size();
         TGraph *g = new TGraph(commands[1].substr(1, length-2).c_str());
         g->SetMarkerSize(1);
-    	g->SetMarkerStyle(2);
+        g->SetMarkerStyle(2);
         g->Draw("AP");
     }
     else {
         cout << "Plot function " << commands[1] << endl;
     }
-
+    
     c->Update();
-    app->Run();   
-    return 0;    
+    //    app->Run();
+    return 0;
 }
 
 void lineParser::ls(){
     DIR *dp = opendir(".");
     struct dirent *dent;
     while ( dp != NULL ){
-    	dent = readdir(dp);
+        dent = readdir(dp);
         if ( dent != NULL ){
-	        string fname = dent->d_name;
-	        cout << fname << endl;
+            string fname = dent->d_name;
+            cout << fname << endl;
         }
         else {
-	        break;
-        } 
-   }
-   closedir(dp);
+            break;
+        }
+    }
+    closedir(dp);
 }
 
 TCanvas *lineParser::createCanvas(){

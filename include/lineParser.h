@@ -27,24 +27,24 @@ using namespace std;
 
 class lineParser
 {
- private:
-  string histfilename = ".grplot_history";
-  int count = 0;
-  string line;
-  TList *canvlist;
-  TApplication *app;
- public:
-  lineParser(TApplication *application);
-  ~lineParser();
-  int readLine();
-  int parse();
-  int setHistFileName(string histfilename);
-  int demo();
-  int plot(vector<string> commands);
-  void ls();
-  TGraphErrors *plotData(string fname);
-  TF1 *plotFunction(string funcname);
-  TCanvas *createCanvas();
+private:
+    string histfilename = ".grplot_history";
+    int count = 0;
+    string line;
+    TList *canvlist;
+    TApplication *app;
+public:
+    lineParser(TApplication *application);
+    ~lineParser();
+    int readLine();
+    int parse();
+    int setHistFileName(string histfilename);
+    int demo();
+    int plot(vector<string> commands);
+    void ls();
+    TGraphErrors *plotData(string fname);
+    TF1 *plotFunction(string funcname);
+    TCanvas *createCanvas();
 };
 
 

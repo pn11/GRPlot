@@ -14,3 +14,11 @@ ROOTでGnuplotみたく簡単にグラフつくりたいと思って作り始め
 `.q`  
 `exit`  
 で終了できる。
+
+## 問題
+- TApplication と readline の共存がよくわからない。TRintを使うべきなのか。
+- <http://be.nucl.ap.titech.ac.jp/~kondo/moin/moin.cgi/APROOT> を参考にする。
+
+
+
+
