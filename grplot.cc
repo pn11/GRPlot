@@ -9,7 +9,7 @@ using namespace std;
 
 #include<TROOT.h>
 #include<TApplication.h>
-#include <TRint.h>
+#include <TRint_gr.h>
 
 #include <sys/types.h> //http://tech.ckme.co.jp/cpp/cpp_readdir.shtml
 #include <dirent.h> //http://www.loose-info.com/main/memolist/c/lib_dirent_readdir.html
@@ -23,7 +23,7 @@ using namespace std;
 int main(int argc, char* argv[]){
     
     //  TApplication *app = new TApplication("App", &argc, argv);
-    TRint *app = new TRint("App", &argc, argv);
+    TRint_gr *app = new TRint_gr("App", &argc, argv);
     
     using_history();
     

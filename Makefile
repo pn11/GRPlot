@@ -10,11 +10,26 @@ ROOTGLIBS := $(shell $(ROOTSYS)/bin/root-config --glibs)
 
 READLINELIBS := -lreadline -lcurses
 GRPLOTFLAGS := -I./include
-GRPLOTLIBS := -L./lib -llineParser
+GRPLOTLIBS := -L./lib -llineParser -lTRint_gr
 
-grplot: lineParser
+DICT := grplot_dict.cc
+
+grplot: lineParser TRint_gr linkdef
 	$(CC) $@.cc $(ROOTCFLAGS) $(ROOTLIBS) $(READLINELIBS) $(GRPLOTFLAGS) $(GRPLOTLIBS) -o $@
+
+linkdef: include/TRint_gr.h linkdef.h
+	rootcint -f $(DICT) -c $(ROOTCFLAGS) $(ROOTLIBS) $(READLINELIBS) $(GRPLOTFLAGS) $^
 
 lineParser:
 	$(CC) src/$@.cc $(ROOTCFLAGS) $(ROOTLIBS) $(READLINELIBS) $(GRPLOTFLAGS) -shared -o lib/lib$@.so
+
+TRint_gr: linkdef
+	$(CC) src/$@.cc $(ROOTCFLAGS) $(ROOTLIBS) $(READLINELIBS) $(GRPLOTFLAGS) -shared $(DICT) -o lib/lib$@.so
+
+.SUFFIXES: .o .cc clean
+.cc.o:
+	$(CC) -o $@ $(ROOTCFLAGS) -c $(ROOTLIBS) $(READLINELIBS) $(GRPLOTFLAGS) $<
+clean:
+	rm *.o *.pcm $(DICT)
+
 

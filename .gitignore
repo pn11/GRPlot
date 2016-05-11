@@ -1,12 +1,14 @@
 private
 *~
 grplot
-grplot.o
+grplot_dict.cc
 
 .grplot_history
 
 *.log
 *.so
+*.o
+*.pcm
 
 ### Xcode ###
 # Created by https://www.gitignore.io/api/xcode
