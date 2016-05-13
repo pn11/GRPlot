@@ -281,7 +281,7 @@ TRint_gr::~TRint_gr()
     //   ih->Remove();
     //   SetSignalHandler(0);
     //   delete ih;
- 
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -475,25 +475,25 @@ void TRint_gr::PrintLogo(Bool_t lite)
                                            gROOT->GetVersion()));
         lines.emplace_back(TString::Format("%%s(c) 2015-2016, Oka"));
         lines.emplace_back(TString::Format("Built for %s%%s", gSystem->GetBuildArch()));
-//        if (!strcmp(gROOT->GetGitBranch(), gROOT->GetGitCommit())) {
-//            static const char *months[] = {"January","February","March","April","May",
-//                "June","July","August","September","October",
-//                "November","December"};
-//            Int_t idatqq = gROOT->GetVersionDate();
-//            Int_t iday   = idatqq%100;
-//            Int_t imonth = (idatqq/100)%100;
-//            Int_t iyear  = (idatqq/10000);
-            
-//            lines.emplace_back(TString::Format("From tag %s, %d %s %4d%%s",
-//                                               gROOT->GetGitBranch(),
-//                                               iday,months[imonth-1],iyear));
-//        } else {
-            // If branch and commit are identical - e.g. "v5-34-18" - then we have
-            // a release build. Else specify the git hash this build was made from.
-//            lines.emplace_back(TString::Format("From %s@%s, %s%%s",
-//                                               gROOT->GetGitBranch(),
-//                                               gROOT->GetGitCommit(), gROOT->GetGitDate()));
-//        }
+        //        if (!strcmp(gROOT->GetGitBranch(), gROOT->GetGitCommit())) {
+        //            static const char *months[] = {"January","February","March","April","May",
+        //                "June","July","August","September","October",
+        //                "November","December"};
+        //            Int_t idatqq = gROOT->GetVersionDate();
+        //            Int_t iday   = idatqq%100;
+        //            Int_t imonth = (idatqq/100)%100;
+        //            Int_t iyear  = (idatqq/10000);
+        
+        //            lines.emplace_back(TString::Format("From tag %s, %d %s %4d%%s",
+        //                                               gROOT->GetGitBranch(),
+        //                                               iday,months[imonth-1],iyear));
+        //        } else {
+        // If branch and commit are identical - e.g. "v5-34-18" - then we have
+        // a release build. Else specify the git hash this build was made from.
+        //            lines.emplace_back(TString::Format("From %s@%s, %s%%s",
+        //                                               gROOT->GetGitBranch(),
+        //                                               gROOT->GetGitCommit(), gROOT->GetGitDate()));
+        //        }
         lines.emplace_back(TString("Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'%s"));
         
         // Find the longest line and its length:
@@ -772,7 +772,7 @@ Int_t TRint_gr::TabCompletionHook(char *buf, int *pLoc, std::ostream& out)
 const char *TRint_gr::TranslateLine(const char *line){
     std::stringstream ss;
     ss.str(line);
-    std::string str, transLine="";
+    std::string str, transLine = "";
     std::vector<std::string> commands;
     //    commands.clear();
     
@@ -794,7 +794,20 @@ const char *TRint_gr::TranslateLine(const char *line){
     }
     
     else if (commands[0] == "demo"){
-        transLine = "TCanvas *c = new TCanvas(); TGraph *g = new TGraph(\"test.dat\"); g->SetMarkerSize(1); g->SetMarkerStyle(2); g->Draw(\"ap\");";
+        transLine = "TGraph *g = new TGraph(\"test.dat\"); g->SetMarkerSize(1); g->SetMarkerStyle(2); g->Draw(\"ap\");";
+    }
+    else if (commands[0] == "plot"){
+//        std::string range = "";
+        if (commands[1].substr(0, 1) == "\""){
+            std::cout << "plot " << commands[1] << std::endl;
+        }
+//        else if (commands[1] == "[" ){
+//          setrange
+//        }
+        else{ // plot function
+            transLine = Form("TF1 *f = new TF1(\"f\", \"%s\"); f->Draw();", commands[1].c_str());
+        }
+        
     }
     return transLine.c_str();
 }
